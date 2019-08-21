@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Whatsapp</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="chat_screen">chat screen</string>
+    <string name="contacts_screen">Contacts screen</string>
+    <string name="groups_screen">Groups screen</string>
+    <string name="email">Email</string>
+    <string name="forget_password">Forget Password ?</string>
+</resources>
