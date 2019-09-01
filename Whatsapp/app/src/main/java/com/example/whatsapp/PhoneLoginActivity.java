@@ -114,6 +114,11 @@ public class PhoneLoginActivity extends AppCompatActivity {
         callbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                loadingBar.setTitle("OTP Verification");
+                loadingBar.setMessage("Waiting to detect an otp sent to your phone");
+                loadingBar.setCanceledOnTouchOutside(false);
+                loadingBar.show();
+
                 signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
@@ -154,10 +159,6 @@ public class PhoneLoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-//                        loadingBar.setTitle("OTP Verification");
-//                        loadingBar.setMessage("Waiting to detect an otp sent to your phone");
-//                        loadingBar.setCanceledOnTouchOutside(false);
-//                        loadingBar.show();
                         if (task.isSuccessful()) {
                             loadingBar.dismiss();
                             Toast.makeText(PhoneLoginActivity.this, "Logged in successfully..", Toast.LENGTH_SHORT).show();

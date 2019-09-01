@@ -17,6 +17,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -28,6 +33,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText UserEmail, UserPassword;
     private TextView NeedNewAccountLink, ForgetPasswordLink;
 
+    private DatabaseReference UsersRef;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 //        currentUser = mAuth.getCurrentUser();
+        UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+
 
         InitializeFields();
 
@@ -68,17 +78,17 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-//
-//    @Override
-//    protected void onStart()
-//    {
-//        super.onStart();
-//
-//        if (currentUser != null)
-//        {
-//            SendUserToMainActivity();
-//        }
-//    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null)
+        {
+            SendUserToMainActivity();
+        }
+    }
 
                     //Login User
 
@@ -109,9 +119,22 @@ public class LoginActivity extends AppCompatActivity {
                         {
                             if (task.isSuccessful())
                             {
-                                SendUserToMainActivity();
-                                Toast.makeText(LoginActivity.this, "Welcome to chatapp", Toast.LENGTH_SHORT).show();
-                                loadingBar.dismiss();
+                                String currentUserId = mAuth.getCurrentUser().getUid();
+                               String deviceToken = FirebaseInstanceId.getInstance().getToken();
+
+                                UsersRef.child(currentUserId).child("device_token").setValue(deviceToken)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful())
+                                                {
+                                                    SendUserToMainActivity();
+                                                    Toast.makeText(LoginActivity.this, "Welcome to chatapp", Toast.LENGTH_SHORT).show();
+                                                    loadingBar.dismiss();
+
+                                                }
+                                            }
+                                        });
                             }
 
                             else
@@ -130,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
     private void SendUserToMainActivity()
     {
         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-       // mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(mainIntent);
         finish();
     }

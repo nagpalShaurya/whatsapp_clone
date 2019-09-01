@@ -78,7 +78,7 @@
         android:background="@drawable/buttons"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:text="Cancel Chat Request"
+        android:text="Decline Request"
         android:textAllCaps="false"
         android:visibility="invisible"
         />
